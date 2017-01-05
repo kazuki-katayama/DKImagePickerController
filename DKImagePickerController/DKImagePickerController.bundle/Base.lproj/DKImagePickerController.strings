@@ -8,24 +8,28 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
-"select" = "Select(%ld)";
+"select" = "選択(%ld)";
 
-"permissionCamera" = "Please Allow Camera Access";
+"permissionCamera" = "カメラへのアクセスを許可してください";
 
-"permissionPhoto" = "Please Allow Photo Access";
+"permissionPhoto" = "写真へのアクセスを許可してください";
 
-"permit" = "Allow Access";
+"permit" = "許可する";
 
-"gotoSettings" = "Go To 「Settings」 To Give Access";
+"gotoSettings" = "「設定」を開きアクセスを許可する";
 
 "ok" = "OK";
 
-"selectPhotosOrVideos" = "Select Photos or Videos";
+"selectPhotosOrVideos" = "写真またはビデオを選択してください";
 
-"selectPhotosOrVideosError" = "It is not possible to select photos and videos at the same time.";
+"selectPhotosOrVideosError" = "同時に、写真とビデオを選択することはできません";
 
-"done" = "Done";
+"done" = "完了";
 
-"maxLimitReached" = "Max photos limit reached";
+"maxLimitReached" = "選択可能枚数に到達しました";
 
-"maxLimitReachedMessage" = "You can select %ld photos";
+"maxLimitReachedMessage" = "%ld 枚まで選択することができます";
+
+"selectablePhotosExt" = "JPEGファイル以外は選択できません。";
+
+"selectablePhotosSize" = "%ldx%ldpx未満の画像ファイルは選択できません。";

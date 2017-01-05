@@ -8,13 +8,12 @@
 
 import UIKit
 
-@objc
-open class DKPermissionView: UIView {
+internal class DKPermissionView: UIView {
 	
 	private let titleLabel = UILabel()
 	private let permitButton = UIButton()
 	
-	open class func permissionView(_ style: DKImagePickerControllerSourceType) -> DKPermissionView {
+	internal class func permissionView(_ style: DKImagePickerControllerSourceType) -> DKPermissionView {
 		
 		let permissionView = DKPermissionView()
 		permissionView.addSubview(permissionView.titleLabel)
@@ -43,13 +42,13 @@ open class DKPermissionView: UIView {
 		return permissionView
 	}
 	
-	open override func didMoveToWindow() {
+	override func didMoveToWindow() {
 		super.didMoveToWindow()
 		
 		self.center = self.superview!.center
 	}
 	
-	open func gotoSettings() {
+	internal func gotoSettings() {
 		if let appSettings = URL(string: UIApplicationOpenSettingsURLString) {
 			UIApplication.shared.openURL(appSettings)
 		}
