@@ -79,11 +79,41 @@ public protocol DKImagePickerControllerUIDelegate {
      Called when the count of the selectedAssets did reach `maxSelectableCount`.
      */
     func imagePickerControllerDidReachMaxLimit(_ imagePickerController: DKImagePickerController)
-    
+
+    /**
+     AssetTypeがjpegOnlyかつ、選択画像がjpeg以外だった際コールされます。
+     */
+    func imagePickerControllerDidDisableCell(_ imagePickerController: DKImagePickerController)
+
+    /**
+     画像サイズがimageSizeUnderLimitより低かった際にコールされます。
+     */
+    func imagePickerControllerDidImageSizeTooSmall(_ imagePickerController: DKImagePickerController)
+
     /**
      Accessory view below content. default is nil.
      */
     func imagePickerControllerFooterView(_ imagePickerController: DKImagePickerController) -> UIView?
+    
+    /**
+     The camera image to be displayed in the album's first cell.
+     */
+    func imagePickerControllerCameraImage() -> UIImage
+    
+    /**
+     Set the color of the number when object is selected.
+     */
+    func imagePickerControllerCheckedNumberColor() -> UIColor
+    
+    /**
+     Set the font of the number when object is selected.
+     */
+    func imagePickerControllerCheckedNumberFont() -> UIFont
+    
+    /**
+     Set the color of the object outline when object is selected.
+     */
+    func imagePickerControllerCheckedImageTintColor() -> UIColor?
     
     /**
      Set the color of the background of the collection view.
@@ -104,7 +134,7 @@ public protocol DKImagePickerControllerUIDelegate {
  */
 @objc
 public enum DKImagePickerControllerAssetType : Int {
-    case allPhotos, allVideos, allAssets
+    case allPhotos, allVideos, allAssets, jpgOnly
 }
 
 @objc
@@ -128,6 +158,9 @@ open class DKImagePickerController : UINavigationController {
     
     /// The maximum count of assets which the user will be able to select.
     public var maxSelectableCount = 999
+
+    /// Image size(px) under limit
+    public var imageSizeUnderLimit = [0.0,0.0]
     
     /// Set the defaultAssetGroup to specify which album is the default asset group.
     public var defaultAssetGroup: PHAssetCollectionSubtype?
@@ -309,6 +342,8 @@ open class DKImagePickerController : UINavigationController {
             predicate = createImagePredicate()
         case .allVideos:
             predicate = createVideoPredicate()
+        case .jpgOnly:
+            predicate = createImagePredicate()
         }
         
         self.assetFetchOptions.predicate = predicate
