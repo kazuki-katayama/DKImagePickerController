@@ -103,7 +103,9 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         } /* DKImageCheckView */
 		
         weak var asset: DKAsset!
-		
+        var uniformTypeIdentifer:String?
+        var imageSize :CGSize?
+
         fileprivate lazy var thumbnailImageView: UIImageView = {
             let thumbnailImageView = UIImageView()
             thumbnailImageView.contentMode = .scaleAspectFill
@@ -394,6 +396,33 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
 			self.collectionView!.deselectItem(at: indexPath, animated: false)
 		}
 		
+        asset.fetchOriginalImage(true){
+            (image,hash) in
+            cell.imageSize = image?.size
+            let options = PHImageRequestOptions()
+            PHImageManager.default().requestImageData(for: asset.originalAsset!, options: options){
+                (result, uti, orientation, info) -> Void in
+                // cellにUTIStringを設定
+                cell.uniformTypeIdentifer = uti
+                
+                let imageSizeWidth = (cell.imageSize?.width)!
+                let imageSizeHeight = (cell.imageSize?.height)!
+                let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
+                let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
+                
+                
+                if (self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
+                    cell.uniformTypeIdentifer != "public.jpeg")
+                    ||
+                    (imageSizeWidth < imageSizeUnderLimitWidth || imageSizeHeight < imageSizeUnderLimitHeight ){
+                    cell.checkView.isHidden = false
+                    cell.checkView.checkLabel.text = "x"
+                }
+                
+            }
+        }
+
+        
 		return cell
 	}
 
@@ -428,10 +457,24 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
             return false
         }
 		
-		let shouldSelect = self.imagePickerController.selectedAssets.count < self.imagePickerController.maxSelectableCount
-		if !shouldSelect {
-			self.imagePickerController.UIDelegate.imagePickerControllerDidReachMaxLimit(self.imagePickerController)
-		}
+        var shouldSelect = true
+        let cell = collectionView.cellForItem(at: indexPath) as! DKAssetCell
+        let imageSizeWidth = (cell.imageSize?.width)!
+        let imageSizeHeight = (cell.imageSize?.height)!
+        let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
+        let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
+        
+        if self.imagePickerController.selectedAssets.count > self.imagePickerController.maxSelectableCount {
+            self.imagePickerController.UIDelegate.imagePickerControllerDidReachMaxLimit(self.imagePickerController)
+            shouldSelect = false
+        }else if self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
+            cell.uniformTypeIdentifer != "public.jpeg" {
+            self.imagePickerController.UIDelegate.imagePickerControllerDidDisableCell(self.imagePickerController)
+            shouldSelect = false
+        }else if imageSizeWidth < imageSizeUnderLimitWidth || imageSizeHeight < imageSizeUnderLimitHeight {
+            self.imagePickerController.UIDelegate.imagePickerControllerDidImageSizeTooSmall(self.imagePickerController)
+            shouldSelect = false
+        }
 		
 		return shouldSelect
     }

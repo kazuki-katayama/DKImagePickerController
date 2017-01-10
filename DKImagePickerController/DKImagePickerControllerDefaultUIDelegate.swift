@@ -95,14 +95,30 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
         self.updateDoneButtonTitle(self.doneButton)
     }
 	
-	open func imagePickerControllerDidReachMaxLimit(_ imagePickerController: DKImagePickerController) {
+    open func imagePickerControllerDidReachMaxLimit(_ imagePickerController: DKImagePickerController) {
         let alert = UIAlertController(title: DKImageLocalizedStringWithKey("maxLimitReached")
             , message:String(format: DKImageLocalizedStringWithKey("maxLimitReachedMessage"), imagePickerController.maxSelectableCount)
             , preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: DKImageLocalizedStringWithKey("ok"), style: .cancel) { _ in })
         imagePickerController.present(alert, animated: true){}
-	}
-	
+    }
+    open func imagePickerControllerDidDisableCell(_ imagePickerController: DKImagePickerController) {
+        let alert = UIAlertController(title: DKImageLocalizedStringWithKey("maxLimitReached")
+            , message:String(DKImageLocalizedStringWithKey("selectablePhotosExt"))
+            , preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: DKImageLocalizedStringWithKey("ok"), style: .cancel) { _ in })
+        imagePickerController.present(alert, animated: true){}
+    }
+    
+    open func imagePickerControllerDidImageSizeTooSmall(_ imagePickerController: DKImagePickerController) {
+        let alert = UIAlertController(title: DKImageLocalizedStringWithKey("maxLimitReached")
+            , message:String(format: DKImageLocalizedStringWithKey("selectablePhotosSize"),Int(imagePickerController.imageSizeUnderLimit[0]),Int(imagePickerController.imageSizeUnderLimit[1]))
+            , preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: DKImageLocalizedStringWithKey("ok"), style: .cancel) { _ in })
+        imagePickerController.present(alert, animated: true){}
+    }
+    
+    
 	open func imagePickerControllerFooterView(_ imagePickerController: DKImagePickerController) -> UIView? {
 		return nil
 	}

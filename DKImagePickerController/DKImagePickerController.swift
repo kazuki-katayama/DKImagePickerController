@@ -66,6 +66,16 @@ public protocol DKImagePickerControllerUIDelegate {
 	*/
 	func imagePickerControllerDidReachMaxLimit(_ imagePickerController: DKImagePickerController)
 	
+    /**
+    AssetTypeがjpegOnlyかつ、選択画像がjpeg以外だった際コールされます。
+    */
+    func imagePickerControllerDidDisableCell(_ imagePickerController: DKImagePickerController)
+    
+    /**
+     画像サイズがimageSizeUnderLimitより低かった際にコールされます。
+     */
+    func imagePickerControllerDidImageSizeTooSmall(_ imagePickerController: DKImagePickerController)
+ 
 	/**
      Accessory view below content. default is nil.
 	*/
@@ -105,7 +115,7 @@ public protocol DKImagePickerControllerUIDelegate {
 */
 @objc
 public enum DKImagePickerControllerAssetType : Int {
-	case allPhotos, allVideos, allAssets
+	case allPhotos, allVideos, allAssets , jpgOnly
 }
 
 @objc
@@ -129,7 +139,11 @@ open class DKImagePickerController : UINavigationController {
 		
     /// The maximum count of assets which the user will be able to select.
     public var maxSelectableCount = 999
-	
+    
+    /// Image size(px) under limit
+    public var imageSizeUnderLimit = [0.0,0.0]
+
+    
 	/// Set the defaultAssetGroup to specify which album is the default asset group.
 	public var defaultAssetGroup: PHAssetCollectionSubtype?
 	
@@ -310,6 +324,8 @@ open class DKImagePickerController : UINavigationController {
 			predicate = createImagePredicate()
 		case .allVideos:
 			predicate = createVideoPredicate()
+        case .jpgOnly:
+            predicate = createImagePredicate()
 		}
 		
 		self.assetFetchOptions.predicate = predicate

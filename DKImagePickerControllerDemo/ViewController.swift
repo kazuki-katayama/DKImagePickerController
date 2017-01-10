@@ -81,13 +81,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     struct Demo {
         static let titles = [
-            ["Pick All", "Pick photos only", "Pick videos only", "Pick All (only photos or videos)"],
+            ["Pick All", "Pick photos only", "Pick videos only", "Pick All (only photos or videos)","JpgOnly"],
             ["Take a picture"],
             ["Hides camera"],
 			["Allows landscape"],
 			["Single select"]
         ]
-        static let types: [DKImagePickerControllerAssetType] = [.allAssets, .allPhotos, .allVideos, .allAssets]
+        static let types: [DKImagePickerControllerAssetType] = [.allAssets, .allPhotos, .allVideos, .allAssets, .jpgOnly]
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
