@@ -42,6 +42,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 		pickerController.sourceType = sourceType
 		pickerController.singleSelect = singleSelect
 		
+        pickerController.maxSelectableCount = 3
+        
 //		pickerController.showsCancelButton = true
 //		pickerController.showsEmptyAlbums = false
 //		pickerController.defaultAssetGroup = PHAssetCollectionSubtype.SmartAlbumFavorites

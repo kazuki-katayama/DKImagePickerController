@@ -464,7 +464,7 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
         let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
         
-        if self.imagePickerController.selectedAssets.count > self.imagePickerController.maxSelectableCount {
+        if self.imagePickerController.selectedAssets.count >= self.imagePickerController.maxSelectableCount {
             self.imagePickerController.UIDelegate.imagePickerControllerDidReachMaxLimit(self.imagePickerController)
             shouldSelect = false
         }else if self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
