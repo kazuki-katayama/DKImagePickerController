@@ -33,7 +33,11 @@ public class DKImageResource {
 	}
 	
     class func checkedImage() -> UIImage {
-		return stretchImgFromMiddle(imageForResource("checked_background"))
+        return stretchImgFromMiddle(imageForResource("number_base"))
+    }
+
+    class func checkedError() -> UIImage {
+        return stretchImgFromMiddle(imageForResource("image_error"))
     }
     
     class func blueTickImage() -> UIImage {

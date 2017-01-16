@@ -71,20 +71,27 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         class DKImageCheckView: UIView {
 
             internal lazy var checkImageView: UIImageView = {
-                let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysTemplate))
+                let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysOriginal))
                 return imageView
             }()
             
             internal lazy var checkLabel: UILabel = {
                 let label = UILabel()
-                label.textAlignment = .right
+                label.textAlignment = .center
                 
                 return label
+            }()
+            
+            internal lazy var checkErrorView:UIImageView = {
+                let imageView = UIImageView(image: DKImageResource.checkedError().withRenderingMode(.alwaysOriginal))
+                imageView.isHidden = true
+                return imageView
             }()
             
             override init(frame: CGRect) {
                 super.init(frame: frame)
                 
+                self.addSubview(checkErrorView)
                 self.addSubview(checkImageView)
                 self.addSubview(checkLabel)
             }
@@ -96,8 +103,18 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
             override func layoutSubviews() {
                 super.layoutSubviews()
                 
-                self.checkImageView.frame = self.bounds
-                self.checkLabel.frame = CGRect(x: 0, y: 5, width: self.bounds.width - 5, height: 20)
+                let errorMarkOrigin : CGPoint = CGPoint(x:0,y:self.bounds.height - 25)
+                let errorMarkSize : CGSize = CGSize(width: 30, height: 30)
+                
+                let checkOrigin : CGPoint = CGPoint(x:self.bounds.width - 30,y:0)
+                let checkSize : CGSize = CGSize(width: 30, height: 30)
+
+                
+                self.checkImageView.frame = CGRect(origin:checkOrigin,size:checkSize)
+                self.checkLabel.frame = CGRect(origin: checkOrigin, size: checkSize)
+
+                self.checkErrorView.frame = CGRect(origin:errorMarkOrigin,size:errorMarkSize)
+
             }
             
         } /* DKImageCheckView */
@@ -410,15 +427,15 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
                 let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
                 let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
                 
-                
-                if (self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
-                    cell.uniformTypeIdentifer != "public.jpeg")
+
+                if ((self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
+                    cell.uniformTypeIdentifer != "public.jpeg"))
                     ||
                     (imageSizeWidth < imageSizeUnderLimitWidth || imageSizeHeight < imageSizeUnderLimitHeight ){
                     cell.checkView.isHidden = false
-                    cell.checkView.checkLabel.text = "x"
+                    cell.checkView.checkErrorView.isHidden = false
+                    cell.checkView.checkImageView.isHidden = true
                 }
-                
             }
         }
 
