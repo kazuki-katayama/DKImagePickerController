@@ -71,7 +71,7 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         class DKImageCheckView: UIView {
 
             internal lazy var checkImageView: UIImageView = {
-                let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysTemplate))
+                let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysOriginal))
                 return imageView
             }()
             
