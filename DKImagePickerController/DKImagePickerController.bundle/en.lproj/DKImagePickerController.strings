@@ -29,7 +29,3 @@
 "maxLimitReached" = "Max photos limit reached";
 
 "maxLimitReachedMessage" = "You can select %ld items";
-
-"selectablePhotosExt" = "You can select file type is JPEG only.";
-
-"selectablePhotosSize" = "You can select image size over %ldx%ld px.";

@@ -29,7 +29,3 @@
 "maxLimitReached" = "選択可能枚数に到達しました";
 
 "maxLimitReachedMessage" = "%ld 枚まで選択することができます";
-
-"selectablePhotosExt" = "JPEGファイル以外は選択できません。";
-
-"selectablePhotosSize" = "%ldx%ldpx未満の画像ファイルは選択できません。";
