@@ -17,4 +17,7 @@ open class DKAssetGroupDetailBaseCell: UICollectionViewCell, DKAssetGroupCellIte
     open weak var asset: DKAsset!
     open var index: Int = 0
     open var thumbnailImage: UIImage!
+    open var imageSize: CGSize!
+    open var uniformTypeIdentifer: String?
+    open var isSelectable: Bool = true
 }

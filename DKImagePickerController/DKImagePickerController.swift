@@ -81,6 +81,16 @@ public protocol DKImagePickerControllerUIDelegate {
     func imagePickerControllerDidReachMaxLimit(_ imagePickerController: DKImagePickerController)
     
     /**
+     AssetTypeがjpegOnlyかつ、選択画像がjpeg以外だった際コールされます。
+     */
+    func imagePickerControllerDidDisableCell(_ imagePickerController: DKImagePickerController)
+    
+    /**
+     画像サイズがimageSizeUnderLimitより低かった際にコールされます。
+     */
+    func imagePickerControllerDidImageSizeTooSmall(_ imagePickerController: DKImagePickerController)
+    
+    /**
      Accessory view below content. default is nil.
      */
     func imagePickerControllerFooterView(_ imagePickerController: DKImagePickerController) -> UIView?
@@ -104,7 +114,7 @@ public protocol DKImagePickerControllerUIDelegate {
  */
 @objc
 public enum DKImagePickerControllerAssetType : Int {
-    case allPhotos, allVideos, allAssets
+    case allPhotos, allVideos, allAssets , jpgOnly
 }
 
 @objc
@@ -128,9 +138,14 @@ open class DKImagePickerController : UINavigationController {
     
     /// The maximum count of assets which the user will be able to select.
     public var maxSelectableCount = 999
+
+    
+    /// Image size(px) under limit
+    public var imageSizeUnderLimit = [0.0,0.0]
     
     /// Set the defaultAssetGroup to specify which album is the default asset group.
     public var defaultAssetGroup: PHAssetCollectionSubtype?
+    
     
     /// The types of PHAssetCollection to display in the picker.
     public var assetGroupTypes: [PHAssetCollectionSubtype] = [
@@ -195,7 +210,7 @@ open class DKImagePickerController : UINavigationController {
     
     /// The callback block is executed when user pressed the cancel button.
     public var didCancel: (() -> Void)?
-    public var showsCancelButton = false {
+    public var showsCancelButton = true {
         didSet {
             if let rootVC =  self.viewControllers.first {
                 self.updateCancelButtonForVC(rootVC)
@@ -227,7 +242,7 @@ open class DKImagePickerController : UINavigationController {
         
         self.preferredContentSize = CGSize(width: 680, height: 600)
         
-        rootVC.navigationItem.hidesBackButton = true
+        rootVC.navigationItem.hidesBackButton = false
         
         getImageManager().groupDataManager.assetGroupTypes = self.assetGroupTypes
         getImageManager().groupDataManager.assetFetchOptions = self.createAssetFetchOptions()
@@ -309,6 +324,9 @@ open class DKImagePickerController : UINavigationController {
             predicate = createImagePredicate()
         case .allVideos:
             predicate = createVideoPredicate()
+        case .jpgOnly:
+            predicate = createImagePredicate()
+
         }
         
         self.assetFetchOptions.predicate = predicate
@@ -410,6 +428,10 @@ open class DKImagePickerController : UINavigationController {
         self.presentingViewController?.dismiss(animated: true, completion: {
             self.didSelectAssets?(self.selectedAssets)
         })
+    }
+    
+    open func help() {
+        
     }
     
     // MARK: - Selection

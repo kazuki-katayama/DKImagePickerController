@@ -14,7 +14,21 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
 	open weak var imagePickerController: DKImagePickerController!
 	
 	open var doneButton: UIButton?
+    open var helpButton: UIButton?
 	
+    lazy var footer: UIToolbar = {
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
+        toolbar.isTranslucent = false
+        toolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(customView: self.createDoneButtonIfNeeded()),
+        ]
+        self.updateDoneButtonTitle(self.createDoneButtonIfNeeded())
+        
+        return toolbar
+    }()
+
+    
 	open func createDoneButtonIfNeeded() -> UIButton {
         if self.doneButton == nil {
             let button = UIButton(type: UIButtonType.custom)
@@ -26,6 +40,26 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
 		
 		return self.doneButton!
 	}
+    
+    open func createHelpButton() -> UIButton {
+        
+        if self.helpButton == nil {
+            let button = UIButton(type: UIButtonType.custom)
+            button.setTitleColor(UINavigationBar.appearance().tintColor ?? self.imagePickerController.navigationBar.tintColor, for: .normal)
+            button.addTarget(self.imagePickerController, action: #selector(DKImagePickerController.help), for: UIControlEvents.touchUpInside)
+            self.helpButton = button
+            self.updateHelpButtonTitle(button)
+
+        }
+        
+        return self.helpButton!
+    }
+
+    open func updateHelpButtonTitle(_ button: UIButton) {
+        button.setTitle(DKImageLocalizedStringWithKey("done"), for: .normal)
+        button.sizeToFit()
+    }
+
     
     open func updateDoneButtonTitle(_ button: UIButton) {
         if self.imagePickerController.selectedAssets.count > 0 {
@@ -41,7 +75,7 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
 	
 	open func prepareLayout(_ imagePickerController: DKImagePickerController, vc: UIViewController) {
 		self.imagePickerController = imagePickerController
-		vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.createDoneButtonIfNeeded())
+		vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.createHelpButton())
 	}
         
     open func imagePickerControllerCreateCamera(_ imagePickerController: DKImagePickerController) -> UIViewController {
@@ -84,8 +118,25 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
         imagePickerController.present(alert, animated: true){}
 	}
 	
+    open func imagePickerControllerDidDisableCell(_ imagePickerController: DKImagePickerController) {
+        let alert = UIAlertController(title: DKImageLocalizedStringWithKey("maxLimitReached")
+            , message:String(DKImageLocalizedStringWithKey("selectablePhotosExt"))
+            , preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: DKImageLocalizedStringWithKey("ok"), style: .cancel) { _ in })
+        imagePickerController.present(alert, animated: true){}
+    }
+    
+    open func imagePickerControllerDidImageSizeTooSmall(_ imagePickerController: DKImagePickerController) {
+        let alert = UIAlertController(title: DKImageLocalizedStringWithKey("maxLimitReached")
+            , message:String(format: DKImageLocalizedStringWithKey("selectablePhotosSize"),Int(imagePickerController.imageSizeUnderLimit[0]),Int(imagePickerController.imageSizeUnderLimit[1]))
+            , preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: DKImageLocalizedStringWithKey("ok"), style: .cancel) { _ in })
+        imagePickerController.present(alert, animated: true){}
+    }
+
+    
 	open func imagePickerControllerFooterView(_ imagePickerController: DKImagePickerController) -> UIView? {
-		return nil
+		return self.footer
 	}
     
     open func imagePickerControllerCollectionViewBackgroundColor() -> UIColor {

@@ -9,7 +9,7 @@
 import UIKit
 
 open class CustomUIDelegate: DKImagePickerControllerDefaultUIDelegate {
-    
+    /*
     lazy var footer: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
         toolbar.isTranslucent = false
@@ -21,7 +21,7 @@ open class CustomUIDelegate: DKImagePickerControllerDefaultUIDelegate {
         
         return toolbar
     }()
-    
+    */
     override open func createDoneButtonIfNeeded() -> UIButton {
         if self.doneButton == nil {
             let button = UIButton(type: .custom)

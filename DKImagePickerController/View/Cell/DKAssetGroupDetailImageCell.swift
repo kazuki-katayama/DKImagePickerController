@@ -26,6 +26,7 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
         self.checkView.checkImageView.tintColor = nil
         self.checkView.checkLabel.font = UIFont.boldSystemFont(ofSize: 14)
         self.checkView.checkLabel.textColor = UIColor.white
+        self.checkView.isSelectable = self.isSelectable
         self.contentView.addSubview(self.checkView)
     }
     
@@ -35,23 +36,35 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
     
     class DKImageCheckView: UIView {
         
+        var isSelectable : Bool = true
+        
         internal lazy var checkImageView: UIImageView = {
-            let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysTemplate))
+            let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysOriginal))
             return imageView
         }()
         
         internal lazy var checkLabel: UILabel = {
             let label = UILabel()
-            label.textAlignment = .right
+            label.textAlignment = .center
             
             return label
         }()
         
+        internal lazy var checkErrorView:UIImageView = {
+            let imageView = UIImageView(image: DKImageResource.checkedError().withRenderingMode(.alwaysOriginal))
+            imageView.isHidden = true
+            return imageView
+        }()
+        
+        internal lazy var errorWhiteView:UIView = UIView()
+
         override init(frame: CGRect) {
             super.init(frame: frame)
             
             self.addSubview(checkImageView)
             self.addSubview(checkLabel)
+            self.addSubview(errorWhiteView)
+            self.addSubview(checkErrorView)
         }
         
         required init?(coder aDecoder: NSCoder) {
@@ -61,8 +74,19 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
         override func layoutSubviews() {
             super.layoutSubviews()
             
-            self.checkImageView.frame = self.bounds
-            self.checkLabel.frame = CGRect(x: 0, y: 5, width: self.bounds.width - 5, height: 20)
+            let errorMarkOrigin : CGPoint = CGPoint(x:0,y:self.bounds.height - 30)
+            let errorMarkSize : CGSize = CGSize(width: 30, height: 30)
+            
+            let checkOrigin : CGPoint = CGPoint(x:self.bounds.width - 25,y:0)
+            let checkSize : CGSize = CGSize(width: 25, height: 25)
+            
+            
+            self.checkImageView.frame = CGRect(origin:checkOrigin,size:checkSize)
+            self.checkLabel.frame = CGRect(origin: checkOrigin, size: checkSize)
+            
+            self.checkErrorView.frame = CGRect(origin:errorMarkOrigin,size:errorMarkSize)
+            self.errorWhiteView.frame = self.bounds
+
         }
         
     } /* DKImageCheckView */
@@ -86,7 +110,7 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
         return thumbnailImageView
     }()
     
-    fileprivate let checkView = DKImageCheckView()
+    public let checkView = DKImageCheckView()
     
     override var isSelected: Bool {
         didSet {

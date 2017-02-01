@@ -25,7 +25,7 @@ class DKImagePickerControllerDemoVC: UITableViewController {
             
         case "Pick Photos Only":
             let pickerController = DKImagePickerController()
-            pickerController.assetType = .allPhotos
+            pickerController.assetType = .jpgOnly
             
             destination.pickerController = pickerController
             
