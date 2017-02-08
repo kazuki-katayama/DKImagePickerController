@@ -56,7 +56,7 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
     }
 
     open func updateHelpButtonTitle(_ button: UIButton) {
-        button.setTitle(DKImageLocalizedStringWithKey("done"), for: .normal)
+        button.setTitle(DKImageLocalizedStringWithKey("help"), for: .normal)
         button.sizeToFit()
     }
 

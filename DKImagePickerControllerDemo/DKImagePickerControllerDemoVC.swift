@@ -19,14 +19,14 @@ class DKImagePickerControllerDemoVC: UITableViewController {
         switch segue.identifier! {
             
         case "Pick All":
-            let pickerController = DKImagePickerController()
+            let pickerController = myPicker()
             
             destination.pickerController = pickerController
             
         case "Pick Photos Only":
-            let pickerController = DKImagePickerController()
+            let pickerController = myPicker()
             pickerController.assetType = .jpgOnly
-            
+            pickerController.sourceType = .photo
             destination.pickerController = pickerController
             
         case "Pick Videos Only":

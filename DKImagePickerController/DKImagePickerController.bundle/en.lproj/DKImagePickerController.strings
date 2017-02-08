@@ -29,3 +29,5 @@
 "maxLimitReached" = "Max photos limit reached";
 
 "maxLimitReachedMessage" = "You can select %ld items";
+
+"help" = "help";

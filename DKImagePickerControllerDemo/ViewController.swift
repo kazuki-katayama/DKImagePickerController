@@ -113,3 +113,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 }
 
+class myPicker : DKImagePickerController {
+    override func help() {
+        print("test")
+    }
+}

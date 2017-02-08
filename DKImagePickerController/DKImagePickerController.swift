@@ -140,12 +140,12 @@ open class DKImagePickerController : UINavigationController {
     public var maxSelectableCount = 999
 
     
+    
     /// Image size(px) under limit
     public var imageSizeUnderLimit = [0.0,0.0]
     
     /// Set the defaultAssetGroup to specify which album is the default asset group.
     public var defaultAssetGroup: PHAssetCollectionSubtype?
-    
     
     /// The types of PHAssetCollection to display in the picker.
     public var assetGroupTypes: [PHAssetCollectionSubtype] = [
@@ -431,7 +431,7 @@ open class DKImagePickerController : UINavigationController {
     }
     
     open func help() {
-        
+        print("is DKImagePicker Inner")
     }
     
     // MARK: - Selection
