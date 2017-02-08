@@ -26,43 +26,33 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
         self.checkView.checkImageView.tintColor = nil
         self.checkView.checkLabel.font = UIFont.boldSystemFont(ofSize: 14)
         self.checkView.checkLabel.textColor = UIColor.white
-        self.checkView.isSelectable = self.isSelectable
+        self.errorView.frame = self.bounds
+        self.errorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.addSubview(self.checkView)
+        self.contentView.addSubview(self.errorView)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class DKImageCheckView: UIView {
-        
-        var isSelectable : Bool = true
-        
-        internal lazy var checkImageView: UIImageView = {
-            let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysOriginal))
-            return imageView
-        }()
-        
-        internal lazy var checkLabel: UILabel = {
-            let label = UILabel()
-            label.textAlignment = .center
-            
-            return label
-        }()
-        
+    class DKImageErrorView: UIView{
         internal lazy var checkErrorView:UIImageView = {
             let imageView = UIImageView(image: DKImageResource.checkedError().withRenderingMode(.alwaysOriginal))
             imageView.isHidden = true
             return imageView
         }()
         
-        internal lazy var errorWhiteView:UIView = UIView()
+        internal lazy var errorWhiteView:UIView = {
+            let errorWhiteView = UIView()
+            errorWhiteView.backgroundColor = UIColor.white
+            errorWhiteView.alpha = 0.8
+            errorWhiteView.isHidden = true
+            return errorWhiteView
+        }()
 
         override init(frame: CGRect) {
             super.init(frame: frame)
-            
-            self.addSubview(checkImageView)
-            self.addSubview(checkLabel)
             self.addSubview(errorWhiteView)
             self.addSubview(checkErrorView)
         }
@@ -73,22 +63,48 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
         
         override func layoutSubviews() {
             super.layoutSubviews()
-            
             let errorMarkOrigin : CGPoint = CGPoint(x:0,y:self.bounds.height - 30)
             let errorMarkSize : CGSize = CGSize(width: 30, height: 30)
-            
-            let checkOrigin : CGPoint = CGPoint(x:self.bounds.width - 25,y:0)
-            let checkSize : CGSize = CGSize(width: 25, height: 25)
-            
-            
-            self.checkImageView.frame = CGRect(origin:checkOrigin,size:checkSize)
-            self.checkLabel.frame = CGRect(origin: checkOrigin, size: checkSize)
-            
             self.checkErrorView.frame = CGRect(origin:errorMarkOrigin,size:errorMarkSize)
             self.errorWhiteView.frame = self.bounds
+        }
 
+    }
+    
+    class DKImageCheckView: UIView {
+        
+        internal lazy var checkImageView: UIImageView = {
+            let imageView = UIImageView(image: DKImageResource.checkedImage().withRenderingMode(.alwaysOriginal))
+            imageView.isHidden = true
+            return imageView
+        }()
+        
+        internal lazy var checkLabel: UILabel = {
+            let label = UILabel()
+            label.textAlignment = .center
+            
+            return label
+        }()
+        
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            self.addSubview(checkImageView)
+            self.addSubview(checkLabel)
         }
         
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            let checkOrigin : CGPoint = CGPoint(x:self.bounds.width - 25,y:0)
+            let checkSize : CGSize = CGSize(width: 25, height: 25)
+            self.checkImageView.frame = CGRect(origin:checkOrigin,size:checkSize)
+            self.checkLabel.frame = CGRect(origin: checkOrigin, size: checkSize)
+        }
+
     } /* DKImageCheckView */
     
     override var thumbnailImage: UIImage? {
@@ -112,10 +128,22 @@ class DKAssetGroupDetailImageCell: DKAssetGroupDetailBaseCell {
     
     public let checkView = DKImageCheckView()
     
+    public let errorView = DKImageErrorView()
+    
     override var isSelected: Bool {
         didSet {
             checkView.isHidden = !super.isSelected
+            checkView.checkImageView.isHidden = !super.isSelected
+            checkView.checkLabel.isHidden = !super.isSelected
         }
     }
+    override var isSelectable: Bool {
+        didSet {
+            errorView.isHidden = super.isSelectable
+            errorView.errorWhiteView.isHidden = super.isSelectable
+            errorView.checkErrorView.isHidden = super.isSelectable
+        }
+    }
+    
     
 } /* DKAssetGroupDetailCell */

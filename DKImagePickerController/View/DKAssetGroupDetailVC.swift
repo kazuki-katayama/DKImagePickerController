@@ -177,15 +177,17 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         let cellClass: DKAssetGroupDetailBaseCell.Type!
         if asset.isVideo {
             cellClass = self.imagePickerController.UIDelegate.imagePickerControllerCollectionVideoCell()
+            self.registerCellIfNeeded(cellClass: cellClass)
+            let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellClass.cellReuseIdentifier(), for: indexPath) as! DKAssetGroupDetailBaseCell
+            self.setup(assetCell: cell, for: indexPath, with: asset)
+            return cell
         } else {
             cellClass = self.imagePickerController.UIDelegate.imagePickerControllerCollectionImageCell()
+            self.registerCellIfNeeded(cellClass: cellClass)
+            let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellClass.cellReuseIdentifier(), for: indexPath) as! DKAssetGroupDetailImageCell
+            self.setup(assetImageCell: cell, for: indexPath, with: asset)
+            return cell
         }
-        self.registerCellIfNeeded(cellClass: cellClass)
-        
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellClass.cellReuseIdentifier(), for: indexPath) as! DKAssetGroupDetailBaseCell
-        self.setup(assetCell: cell, for: indexPath, with: asset)
-        
-        return cell
     }
     
     func dequeueReusableCameraCell(for indexPath: IndexPath) -> DKAssetGroupDetailBaseCell {
@@ -198,8 +200,8 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
 	
     func setup(assetCell cell: DKAssetGroupDetailBaseCell, for indexPath: IndexPath, with asset: DKAsset) {
         cell.asset = asset
-		let tag = indexPath.row + 1
-		cell.tag = tag
+        let tag = indexPath.row + 1
+        cell.tag = tag
         
         if self.thumbnailSize.equalTo(CGSize.zero) {
             self.thumbnailSize = self.collectionView!.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
@@ -210,45 +212,63 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
                 cell.thumbnailImage = image
             }
         }
+        
+        if let index = self.imagePickerController.selectedAssets.index(of: asset) {
+            cell.isSelected = true
+            cell.index = index
+            self.collectionView!.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        } else {
+            cell.isSelected = false
+            self.collectionView!.deselectItem(at: indexPath, animated: false)
+        }
+    }
 
-		if let index = self.imagePickerController.selectedAssets.index(of: asset) {
-			cell.isSelected = true
-			cell.index = index
-			self.collectionView!.selectItem(at: indexPath, animated: false, scrollPosition: [])
-		} else {
-			cell.isSelected = false
-			self.collectionView!.deselectItem(at: indexPath, animated: false)
-		}
-        asset.fetchOriginalImage(true){
-            (image,hash) in
-            cell.imageSize = image?.size
-            let options = PHImageRequestOptions()
-            PHImageManager.default().requestImageData(for: asset.originalAsset!, options: options){
-                (result, uti, orientation, info) -> Void in
-                // cellにUTIStringを設定
-                cell.uniformTypeIdentifer = uti
-                
-                let imageSizeWidth = (cell.imageSize?.width)!
-                let imageSizeHeight = (cell.imageSize?.height)!
-                let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
-                let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
-                
-                
-                if (self.imagePickerController.assetType == DKImagePickerControllerAssetType.jpgOnly &&
-                    cell.uniformTypeIdentifer != "public.jpeg")
-                    ||
-                    (imageSizeWidth < imageSizeUnderLimitWidth || imageSizeHeight < imageSizeUnderLimitHeight ){
-                    let data = cell as! DKAssetGroupDetailImageCell
-                    data.checkView.errorWhiteView.backgroundColor = UIColor.white
-                    data.checkView.errorWhiteView.alpha = 0.8
-                    data.checkView.isHidden = false
-                    data.checkView.checkErrorView.isHidden = false
-                    data.checkView.checkImageView.isHidden = true
-                }
-                
+    func setup(assetImageCell cell: DKAssetGroupDetailImageCell, for indexPath: IndexPath, with asset: DKAsset) {
+        cell.asset = asset
+        let tag = indexPath.row + 1
+        cell.tag = tag
+        
+        if self.thumbnailSize.equalTo(CGSize.zero) {
+            self.thumbnailSize = self.collectionView!.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+        }
+        
+        asset.fetchImageWithSize(self.thumbnailSize, options: nil, contentMode: .aspectFill) { (image, info) in
+            if cell.tag == tag {
+                cell.thumbnailImage = image
             }
         }
-	}
+        
+        if let index = self.imagePickerController.selectedAssets.index(of: asset) {
+            cell.isSelected = true
+            cell.index = index
+            self.collectionView!.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        } else {
+            cell.isSelected = false
+            self.collectionView!.deselectItem(at: indexPath, animated: false)
+        }
+        
+        cell.imageSize = CGSize(width: asset.originalAsset!.pixelWidth, height: asset.originalAsset!.pixelHeight)
+        let options = PHImageRequestOptions()
+        PHImageManager.default().requestImageData(for: asset.originalAsset!, options: options){
+            (result, uti, orientation, info) -> Void in
+            // cellにUTIStringを設定
+            cell.uniformTypeIdentifer = uti
+            
+            let imageSizeWidth = (cell.imageSize?.width)!
+            let imageSizeHeight = (cell.imageSize?.height)!
+            let imageSizeUnderLimitWidth = CGFloat(self.imagePickerController.imageSizeUnderLimit[0])
+            let imageSizeUnderLimitHeight = CGFloat(self.imagePickerController.imageSizeUnderLimit[1])
+            
+            // サイズ判定
+            let sizeSelectable = (imageSizeWidth >= imageSizeUnderLimitWidth ) && (imageSizeHeight >= imageSizeUnderLimitHeight)
+            
+            // ファイル拡張子判定
+            let utiSelectable = (self.imagePickerController.assetType != .jpgOnly ||
+                (self.imagePickerController.assetType == .jpgOnly && cell.uniformTypeIdentifer == "public.jpeg")
+            )
+            cell.isSelectable = sizeSelectable && utiSelectable
+        }
+    }
 
     // MARK: - UICollectionViewDelegate, UICollectionViewDataSource methods
 
@@ -266,7 +286,6 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
         } else {
             cell = self.dequeueReusableCell(for: indexPath)
         }
-        
         return cell
     }
     
@@ -302,7 +321,6 @@ internal class DKAssetGroupDetailVC: UIViewController, UICollectionViewDelegate,
             self.imagePickerController.UIDelegate.imagePickerControllerDidImageSizeTooSmall(self.imagePickerController)
             shouldSelect = false
         }
-		
 		return shouldSelect
     }
     
