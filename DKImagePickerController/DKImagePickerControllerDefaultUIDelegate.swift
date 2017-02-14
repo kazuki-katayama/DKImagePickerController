@@ -19,10 +19,12 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
     lazy var footer: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
         toolbar.isTranslucent = false
+        toolbar.tintColor = self.imagePickerController.navigationBar.tintColor
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: self.createDoneButtonIfNeeded()),
         ]
+        
         self.updateDoneButtonTitle(self.createDoneButtonIfNeeded())
         
         return toolbar
