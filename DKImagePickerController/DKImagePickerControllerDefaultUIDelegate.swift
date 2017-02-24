@@ -15,12 +15,14 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
 	
 	open var doneButton: UIButton?
     open var helpButton: UIButton?
+    open var sortSwitch: UISegmentedControl?
 	
     lazy var footer: UIToolbar = {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
         toolbar.isTranslucent = false
         toolbar.tintColor = self.imagePickerController.navigationBar.tintColor
         toolbar.items = [
+            UIBarButtonItem(customView: self.createSortButton()),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: self.createDoneButtonIfNeeded()),
         ]
@@ -57,6 +59,34 @@ open class DKImagePickerControllerDefaultUIDelegate: NSObject, DKImagePickerCont
         return self.helpButton!
     }
 
+    open func createSortButton() -> UISegmentedControl {
+        if self.sortSwitch == nil {
+            let switchItem = UISegmentedControl(items: ["新しい順","古い順"])
+            switchItem.selectedSegmentIndex = 0
+            switchItem.addTarget(self, action: #selector(self.sortCheck(segcon:)), for: UIControlEvents.valueChanged)
+            self.sortSwitch = switchItem
+        }
+        return self.sortSwitch!
+    }
+    
+    open func sortCheck(segcon:UISegmentedControl){
+        let groupIds :[String] = getImageManager().groupDataManager.groupIds!
+        let groups : [String:DKAssetGroup] = getImageManager().groupDataManager.groups!
+        if segcon.selectedSegmentIndex == 0 {
+            self.imagePickerController.sortByAsc = false
+        }
+        else {
+            self.imagePickerController.sortByAsc = true
+        }
+        getImageManager().groupDataManager.assetFetchOptions = self.imagePickerController.createAssetFetchOptions()
+        for groupId in groupIds {
+            getImageManager().groupDataManager.updateGroup(groups[groupId]!, collection: (groups[groupId]?.originalCollection)!)
+            getImageManager().stopCachingForAllAssets()
+            let rootVC = self.imagePickerController.viewControllers.first as? DKAssetGroupDetailVC
+            rootVC?.updateCachedAssets()
+        }
+    }
+    
     open func updateHelpButtonTitle(_ button: UIButton) {
         button.setTitle(DKImageLocalizedStringWithKey("help"), for: .normal)
         button.sizeToFit()

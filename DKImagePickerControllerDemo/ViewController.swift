@@ -12,21 +12,21 @@ import AVKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
 
-    var pickerController: DKImagePickerController!
+    var pickerController: ImagePicker!
     
     @IBOutlet var previewView: UICollectionView?
-    var assets: [DKAsset]?
+    var assets: [ImageAsset]?
     
 	func showImagePicker() {
-		pickerController.defaultSelectedAssets = self.assets
-		
+		//pickerController.defaultSelectedAssets = self.assets
+		/*
 		pickerController.didSelectAssets = { [unowned self] (assets: [DKAsset]) in
 			print("didSelectAssets")
 			
 			self.assets = assets
 			self.previewView?.reloadData()
 		}
-		
+		*/
 		if UI_USER_INTERFACE_IDIOM() == .pad {
 			pickerController.modalPresentationStyle = .formSheet
 		}
@@ -110,11 +110,5 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 				self.playVideo(avAsset!)
 			})
 		}
-    }
-}
-
-class myPicker : DKImagePickerController {
-    override func help() {
-        print("test")
     }
 }

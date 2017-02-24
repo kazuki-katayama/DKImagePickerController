@@ -21,7 +21,7 @@ protocol DKGroupDataManagerObserver {
 public class DKGroupDataManager: DKBaseManager, PHPhotoLibraryChangeObserver {
 
     public var groupIds: [String]?
-	private var groups: [String : DKAssetGroup]?
+	public var groups: [String : DKAssetGroup]?
     private var assets = [String: DKAsset]()
 	
 	public var assetGroupTypes: [PHAssetCollectionSubtype]?
@@ -103,7 +103,7 @@ public class DKGroupDataManager: DKBaseManager, PHPhotoLibraryChangeObserver {
 		return subtype.rawValue < PHAssetCollectionSubtype.smartAlbumGeneric.rawValue ? .album : .smartAlbum
 	}
 	
-	private func updateGroup(_ group: DKAssetGroup, collection: PHAssetCollection) {
+	public func updateGroup(_ group: DKAssetGroup, collection: PHAssetCollection) {
 		group.groupName = collection.localizedTitle
 		self.updateGroup(group, fetchResult: PHAsset.fetchAssets(in: collection, options: self.assetFetchOptions))
 		group.originalCollection = collection

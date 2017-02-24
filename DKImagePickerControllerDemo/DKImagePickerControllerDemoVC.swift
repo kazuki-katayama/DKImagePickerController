@@ -21,70 +21,18 @@ class DKImagePickerControllerDemoVC: UITableViewController {
         case "Pick All":
             let pickerController = myPicker()
             
-            destination.pickerController = pickerController
+            //destination.pickerController = pickerController
             
-        case "Pick Photos Only":
-            let pickerController = myPicker()
-            pickerController.assetType = .jpgOnly
-            pickerController.sourceType = .photo
-            destination.pickerController = pickerController
-            
-        case "Pick Videos Only":
-            let pickerController = DKImagePickerController()
-            pickerController.assetType = .allVideos
-            
-            destination.pickerController = pickerController
-            
-        case "Pick All(Only Photos Or Videos)":
-            let pickerController = DKImagePickerController()
-            pickerController.allowMultipleTypes = false
-            
-            destination.pickerController = pickerController
-            
-        case "Take A Picture":
-            let pickerController = DKImagePickerController()
-            pickerController.sourceType = .camera
-            
-            destination.pickerController = pickerController
-            
-        case "Hides Camera":
-            let pickerController = DKImagePickerController()
-            pickerController.sourceType = .photo
-            
-            destination.pickerController = pickerController
-            
-        case "Allows Landscape":
-            let pickerController = DKImagePickerController()
-            pickerController.allowsLandscape = true
-            
-            destination.pickerController = pickerController
-            
-        case "Single Select":
-            let pickerController = DKImagePickerController()
-            pickerController.singleSelect = true
-            
-            destination.pickerController = pickerController
-            
-        case "Camera Customization":
-            let pickerController = DKImagePickerController()
-            pickerController.UIDelegate = CustomCameraUIDelegate()
-            pickerController.modalPresentationStyle = .overCurrentContext
-            
-            destination.pickerController = pickerController
-            
-        case "UI Customization":
-            let pickerController = DKImagePickerController()
-            pickerController.UIDelegate = CustomUIDelegate()
-            pickerController.showsCancelButton = true
-            
-            destination.pickerController = pickerController
-            
-        case "Layout Customization":
-            let pickerController = DKImagePickerController()
-            pickerController.UIDelegate = CustomLayoutUIDelegate()
-            
-            destination.pickerController = pickerController
-            
+        case "Pick Photos Only": break
+        case "Pick Videos Only": break
+        case "Pick All(Only Photos Or Videos)": break
+        case "Take A Picture": break
+        case "Hides Camera": break
+        case "Allows Landscape": break
+        case "Single Select": break
+        case "Camera Customization": break
+        case "UI Customization": break
+        case "Layout Customization": break
         default:
             assert(false)
         }

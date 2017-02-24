@@ -144,6 +144,10 @@ open class DKImagePickerController : UINavigationController {
     /// Image size(px) under limit
     public var imageSizeUnderLimit = [0.0,0.0]
     
+    
+    /// sort
+    public var sortByAsc = false
+    
     /// Set the defaultAssetGroup to specify which album is the default asset group.
     public var defaultAssetGroup: PHAssetCollectionSubtype?
     
@@ -293,11 +297,11 @@ open class DKImagePickerController : UINavigationController {
     
     private lazy var assetFetchOptions: PHFetchOptions = {
         let assetFetchOptions = PHFetchOptions()
-        assetFetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        assetFetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: self.sortByAsc)]
         return assetFetchOptions
     }()
     
-    private func createAssetFetchOptions() -> PHFetchOptions? {
+    public func createAssetFetchOptions() -> PHFetchOptions? {
         let createImagePredicate = { () -> NSPredicate in
             var imagePredicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
             if let imageFetchPredicate = self.imageFetchPredicate {
